@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysqlEncurtador
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: encurtador_db
+      MYSQL_USER: encurtador_user
+      MYSQL_PASSWORD: encurtador_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbencurtador:/var/lib/mysql
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:3000"
+    environment:
+      NODE_ENV: production
+      DB_PORT: 3306
+      DB_HOST: db
+      DB_DATABASE: encurtador_db
+      DB_USER: encurtador_user
+      DB_PASSWORD: encurtador_pass
+      BASE_URL: http://localhost
+      JWT_KEY: 1dab0520a8bd47f45794c5ab2ae09e46
+      PORT: 3000
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+volumes:
+  dbencurtador:
