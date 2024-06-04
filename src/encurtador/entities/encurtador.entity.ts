@@ -1,17 +1,27 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { Usuario } from "src/usuario/entities/usuario.entity";
 import { AfterLoad, BeforeInsert, Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import {v4 as uuidv4} from 'uuid'
+import {randomUUID} from 'node:crypto'
 
 @Entity()
 export class Encurtador {
     @PrimaryGeneratedColumn('uuid')
+    @ApiProperty({
+        example: "hashuuid"
+    })
     id: string;
 
     @Column()
+    @ApiProperty({
+        example: "https://google.com"
+    })
     url: string
 
     @Column({
         default: 0
+    })
+    @ApiProperty({
+        example: 999
     })
     count: number
 
@@ -19,11 +29,17 @@ export class Encurtador {
         unique: true,
         length: '6'
     })
+    @ApiProperty({
+        example: "hash"
+    })
     hash: string
     
     @CreateDateColumn({
         type: 'timestamp',
         default: () => "CURRENT_TIMESTAMP(6)"
+    })
+    @ApiProperty({
+        example: "2000-01-01"
     })
     created_at: Date;
 
@@ -31,6 +47,9 @@ export class Encurtador {
         type: 'timestamp',
         default: () => "CURRENT_TIMESTAMP(6)",
         onUpdate: "CURRENT_TIMESTAMP(6)"
+    })
+    @ApiProperty({
+        example: "2000-01-01"
     })
     updated_at: Date;
 
@@ -46,7 +65,7 @@ export class Encurtador {
     @BeforeInsert()
     generateId() {
         if(!this.id) {
-            this.id = uuidv4();
+            this.id = randomUUID();
         }
     }
 
